@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PcSystemMapper">
+    <resultMap type="PcSystem" id="PcSystemResult">
+        <result property="systemId" column="system_id"/>
+        <result property="systemVersion" column="system_version"/>
+        <result property="systemName" column="system_name"/>
+        <result property="systemLeader" column="system_leader"/>
+        <result property="systemStatus" column="system_status"/>
+        <result property="systemContent" column="system_content"/>
+        <result property="dataTotal" column="data_total"/>
+        <result property="dataDayAdd" column="data_day_add"/>
+        <result property="dataTableType" column="data_table_type"/>
+        <result property="dataTableNum" column="data_table_num"/>
+        <result property="deploySystem" column="deploy_system"/>
+        <result property="dataSource" column="data_source"/>
+        <result property="useCompany" column="use_company"/>
+        <result property="manageCompany" column="manage_company"/>
+        <result property="registerUser" column="register_user"/>
+        <result property="apiNum" column="api_num"/>
+        <result property="buildTime" column="build_time"/>
+        <result property="sort" column="sort"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <select id="getPcSystemList" resultMap="PcSystemResult">
+        select * from pc_system order by sort asc
+    </select>
+</mapper> 

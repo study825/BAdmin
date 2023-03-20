@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PcModuleMapper">
+    <resultMap type="PcModuleVo" id="PcModuleResult">
+        <result property="moduleId" column="module_id"/>
+        <result property="moduleName" column="module_name"/>
+        <result property="detailUrl" column="detail_url"/>
+        <result property="systemId" column="system_id"/>
+        <result property="systemName" column="system_name"/>
+        <result property="moduleContent" column="module_content"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <select id="getPcModuleList" resultMap="PcModuleResult">
+        select pc_module.*, pc_system.system_name from pc_module
+                 left join pc_system on pc_module.system_id = pc_system.system_id
+    </select>
+
+    <select id="getPcModuleListLike" resultMap="PcModuleResult" parameterType="String">
+        select pc_module.*, pc_system.system_name from pc_module
+            left join pc_system on pc_module.system_id = pc_system.system_id where module_name like concat('%', #{moduleName}, '%')
+    </select>
+</mapper>
