@@ -83,8 +83,25 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
+            <el-form-item label="系统名称(拼音)" prop="systemName">
+              <el-input v-model="form.des" placeholder="请输入内容" maxlength="100"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item label="系统版本" prop="systemVersion">
               <el-input v-model="form.systemVersion" placeholder="请输入内容" maxlength="30"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="背景图" prop="videoLogo">
+              <el-upload class="avatar-uploader" :action="uploadUrl" :show-file-list="false"
+                         :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload" :on-remove="handleRemoveAvatar">
+                <img v-if="systemBackgroundImage" :src="systemBackgroundImage" class="avatar">
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              </el-upload>
             </el-form-item>
           </el-col>
         </el-row>
@@ -96,7 +113,14 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="系统状态" prop="systemStatus">
-              <el-input v-model="form.systemStatus" placeholder="请输入内容" maxlength="50"/>
+                <el-select v-model="form.systemStatus" placeholder="请选择">
+                  <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -199,13 +223,8 @@
 
 <script>
 import {
-  listUser,
   getUser,
-  delUser,
-  updateUser,
-  resetUserPwd,
   changeUserStatus,
-  deptTreeSelect
 } from "@/api/system/user";
 
 
@@ -236,26 +255,20 @@ export default {
       userList: null,
       // 弹出层标题
       title: "",
-      // 部门树选项
-      deptOptions: undefined,
       // 是否显示弹出层
       open: false,
-      // 部门名称
-      deptName: undefined,
-      // 默认密码
-      initPassword: undefined,
       // 日期范围
       dateRange: [],
-      // 岗位选项
-      postOptions: [],
-      // 角色选项
-      roleOptions: [],
+      uploadUrl: process.env.VUE_APP_BASE_API + "/common/upload",
       // 表单参数
-      form: {},
+      form: {
+        systemBackgroundImage: ""
+      },
       defaultProps: {
         children: "children",
         label: "label"
       },
+      systemBackgroundImage: "",
       // 用户导入参数
       upload: {
         // 是否显示弹出层（用户导入）
@@ -290,6 +303,16 @@ export default {
         {key: 5, label: `状态`, visible: true},
         {key: 6, label: `创建时间`, visible: true}
       ],
+      options: [{
+        value: '正常',
+        label: '正常'
+      }, {
+        value: '离线',
+        label: '离线'
+      }, {
+        value: '待上线',
+        label: '待上线'
+      }],
       // 表单校验
       rules: {
         userName: [
@@ -309,22 +332,12 @@ export default {
             message: "请输入正确的邮箱地址",
             trigger: ["blur", "change"]
           }
-        ],
-        phonenumber: [
-          {
-            pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
-            message: "请输入正确的手机号码",
-            trigger: "blur"
-          }
         ]
       }
     };
   },
   watch: {
-    // 根据名称筛选部门树
-    deptName(val) {
-      this.$refs.tree.filter(val);
-    }
+
   },
   created() {
     this.getList();
@@ -370,10 +383,12 @@ export default {
       this.form = {
         systemId: undefined,
         systemName: undefined,
+        des: undefined,
         systemVersion: undefined,
         systemLeader: undefined,
         systemStatus: undefined,
         systemContent: undefined,
+        systemBackgroundImage: "",
         dataTotal: undefined,
         dataDayAdd: undefined,
         dataTableNum: undefined,
@@ -387,6 +402,7 @@ export default {
         apiNum: undefined,
         sort: undefined
       };
+      this.systemBackgroundImage = ""
       this.resetForm("form");
     },
     /** 搜索按钮操作 */
@@ -408,28 +424,12 @@ export default {
       this.single = selection.length != 1;
       this.multiple = !selection.length;
     },
-    // 更多操作触发
-    handleCommand(command, row) {
-      switch (command) {
-        case "handleResetPwd":
-          this.handleResetPwd(row);
-          break;
-        case "handleAuthRole":
-          this.handleAuthRole(row);
-          break;
-        default:
-          break;
-      }
-    },
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
       getUser().then(response => {
-        this.postOptions = response.posts;
-        this.roleOptions = response.roles;
         this.open = true;
         this.title = "添加系统";
-        this.form.password = this.initPassword;
       });
     },
     /** 修改按钮操作 */
@@ -439,17 +439,27 @@ export default {
       // const userId = row.userId || this.ids;
       this.title = "修改系统";
       this.form = row;
+      this.systemBackgroundImage = row.systemBackgroundImage;
       this.open = true;
-      // getUser(userId).then(response => {
-      //   this.form = response.data;
-      //   this.postOptions = response.posts;
-      //   this.roleOptions = response.roles;
-      //   this.$set(this.form, "postIds", response.postIds);
-      //   this.$set(this.form, "roleIds", response.roleIds);
-      //   this.open = true;
-      //   this.title = "修改系统";
-      //   this.form.password = "";
-      // });
+    },
+    handleAvatarSuccess(res, file) {
+      if (res.code == 200) {
+        this.systemBackgroundImage = res.url;
+        this.form.systemBackgroundImage = res.url;
+        console.log(this.systemBackgroundImage)
+      } else {
+        // this.msgError("上传失败");
+      }
+    },
+    beforeAvatarUpload(file) {
+      let isAccept = new RegExp('image/*').test(file.type)
+      if (!isAccept) {
+        this.$message.error('应该选择image/*类型的文件')
+      }
+      return isAccept;
+    },
+    handleRemoveAvatar(file, fileList) {
+
     },
     /** 提交按钮 */
     submitForm: function () {
@@ -472,11 +482,6 @@ export default {
               this.open = false;
               this.getList();
             })
-            // addUser(this.form).then(response => {
-            //   this.$modal.msgSuccess("新增成功");
-            //   this.open = false;
-            //   this.getList();
-            // });
           }
         }
       });
@@ -526,3 +531,52 @@ export default {
   }
 };
 </script>
+
+<style>
+.el-tag+.el-tag {
+  margin-left: 10px;
+}
+
+.button-new-tag {
+  margin-left: 10px;
+  height: 32px;
+  line-height: 30px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.el-row {
+  margin-bottom: 20px;
+
+&:last-child {
+   margin-bottom: 0;
+ }
+}
+
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 98px;
+  height: 98px;
+  line-height: 98px;
+  text-align: center;
+}
+
+.avatar {
+  width: 98px;
+  height: 98px;
+  display: block;
+}
+</style>

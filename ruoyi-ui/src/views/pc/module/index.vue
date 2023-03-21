@@ -2,8 +2,21 @@
   <div class="app-container">
     <el-row :gutter="20">
       <el-col :span="24" :xs="24">
-        <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch"
-                 label-width="68px">
+        <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+          <el-form-item label="系统" prop="status">
+            <el-select v-model="queryParams.systemId" placeholder="请选择系统">
+              <el-option
+                v-for="item in systemList"
+                :key="item.systemId"
+                :label="item.systemName"
+                :value="item.systemId"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+            <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+          </el-form-item>
         </el-form>
 
         <el-row :gutter="10" class="mb8">
@@ -67,7 +80,7 @@
     </el-row>
 
     <!-- 添加或修改用户配置对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" width="1000px" append-to-body>
       <el-form ref="form" :model="form" label-width="80px">
         <el-row>
           <el-col :span="12">
@@ -275,7 +288,7 @@ export default {
     resetQuery() {
       this.dateRange = [];
       this.resetForm("queryForm");
-      this.queryParams.deptId = undefined;
+      this.queryParams.systemId = undefined;
       this.$refs.tree.setCurrentKey(null);
       this.handleQuery();
     },

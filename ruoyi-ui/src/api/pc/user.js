@@ -32,3 +32,15 @@ export function delPcUser(userId) {
     method: 'post'
   })
 }
+
+export function resetUserPwd(userId, password) {
+  const data = {
+    userId,
+    password
+  }
+  return request({
+    url: '/pc/user/resetPwd',
+    method: 'post',
+    data: data
+  })
+}

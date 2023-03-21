@@ -35,7 +35,7 @@ export default {
   },
   data() {
     return {
-      title: '数据资源共享服务平台管理系统',
+      title: '数据目录共享服务平台管理系统',
       logo: logoImg
     }
   }
