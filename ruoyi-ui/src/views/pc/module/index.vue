@@ -2,7 +2,8 @@
   <div class="app-container">
     <el-row :gutter="20">
       <el-col :span="24" :xs="24">
-        <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+        <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch"
+                 label-width="68px">
           <el-form-item label="系统" prop="status">
             <el-select v-model="queryParams.systemId" placeholder="请选择系统">
               <el-option
@@ -31,12 +32,25 @@
             >新增
             </el-button>
           </el-col>
+          <el-col :span="1.5">
+            <el-button
+              type="danger"
+              plain
+              icon="el-icon-delete"
+              size="mini"
+              :disabled="multiple"
+              @click="handleDelete"
+              v-hasPermi="['system:user:remove']"
+            >删除
+            </el-button>
+          </el-col>
         </el-row>
 
         <el-table v-loading="loading" :data="userList" @selection-change="handleSelectionChange">
-          <el-table-column label="模块ID" align="center" key="moduleId" prop="moduleId" />
+          <el-table-column type="selection" width="50" align="center"/>
+          <el-table-column label="模块ID" align="center" key="moduleId" prop="moduleId"/>
           <el-table-column label="模块名称" align="center" key="moduleName" prop="moduleName"/>
-          <el-table-column label="归属系统" align="center" key="systemName" prop="systemName" />
+          <el-table-column label="归属系统" align="center" key="systemName" prop="systemName"/>
           <el-table-column label="创建时间" align="center" prop="createTime" width="160">
             <template slot-scope="scope">
               <span>{{ parseTime(scope.row.createTime) }}</span>
@@ -80,7 +94,7 @@
     </el-row>
 
     <!-- 添加或修改用户配置对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="1000px" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" width="1000px" append-to-body @close='closeDialog'>
       <el-form ref="form" :model="form" label-width="80px">
         <el-row>
           <el-col :span="12">
@@ -111,7 +125,13 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="模块内容" prop="detailUrl">
-                <Editor :min-height=400 v-model="form.moduleContent"></Editor>
+              <!--              <tinymce :height="300" v-model="form.moduleContent" id='tinymce'></tinymce>-->
+              <!--              <Tinymce :str="form.moduleContent"></Tinymce>-->
+<!--              <Editor v-model="form.moduleContent"></Editor>-->
+              <div>
+                <tinymce v-if="open" v-model="form.moduleContent" :height="300" />
+              </div>
+              <!--              <TinymceEditor v-model="form.moduleContent" ></TinymceEditor>-->
             </el-form-item>
           </el-col>
         </el-row>
@@ -129,12 +149,16 @@
 import {getToken} from "@/utils/auth";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 import {addModule, delModule, moduleList, updateModule} from "@/api/pc/module";
-import Editor from '@/components/Editor/index.vue';
+// import Editor from '@/components/Editor/index.vue';
+import Tinymce from '@/components/Tinymce'
+// import Editor from '@/components/Tinymce2/index.vue';
+// import TinymceEditor from '../../../components/TEditor/index.vue'
+// import { Vue2TinymceEditor } from "vue2-tinymce-editor";
 import {systemListAll} from "@/api/pc/system";
 
 export default {
   name: "Module",
-  components: { Editor},
+  components: {Tinymce},
   data() {
     return {
       // 遮罩层
@@ -196,11 +220,8 @@ export default {
       },
     };
   },
-  computed: {
-
-  },
-  watch: {
-  },
+  computed: {},
+  watch: {},
   mounted() {
   },
   created() {
@@ -217,35 +238,35 @@ export default {
     //   this.Quill = null;
     // },
     // 上传前校检格式和大小
-    handleBeforeUpload(file) {
-      // 校检文件大小
-      if (this.fileSize) {
-        const isLt = file.size / 1024 / 1024 < this.fileSize;
-        if (!isLt) {
-          this.$message.error(`上传文件大小不能超过 ${this.fileSize} MB!`);
-          return false;
-        }
-      }
-      return true;
-    },
-    handleUploadSuccess(res, file) {
-      // 获取富文本组件实例
-      let quill = this.Quill;
-      // 如果上传成功
-      if (res.code == 200) {
-        // 获取光标所在位置
-        let length = quill.getSelection().index;
-        // 插入图片  res.url为服务器返回的图片地址
-        quill.insertEmbed(length, "image", process.env.VUE_APP_BASE_API + res.fileName);
-        // 调整光标到最后
-        quill.setSelection(length + 1);
-      } else {
-        this.$message.error("图片插入失败");
-      }
-    },
-    handleUploadError() {
-      this.$message.error("图片插入失败");
-    },
+    // handleBeforeUpload(file) {
+    //   // 校检文件大小
+    //   if (this.fileSize) {
+    //     const isLt = file.size / 1024 / 1024 < this.fileSize;
+    //     if (!isLt) {
+    //       this.$message.error(`上传文件大小不能超过 ${this.fileSize} MB!`);
+    //       return false;
+    //     }
+    //   }
+    //   return true;
+    // },
+    // handleUploadSuccess(res, file) {
+    //   // 获取富文本组件实例
+    //   let quill = this.Quill;
+    //   // 如果上传成功
+    //   if (res.code == 200) {
+    //     // 获取光标所在位置
+    //     let length = quill.getSelection().index;
+    //     // 插入图片  res.url为服务器返回的图片地址
+    //     quill.insertEmbed(length, "image", process.env.VUE_APP_BASE_API + res.fileName);
+    //     // 调整光标到最后
+    //     quill.setSelection(length + 1);
+    //   } else {
+    //     this.$message.error("图片插入失败");
+    //   }
+    // },
+    // handleUploadError() {
+    //   this.$message.error("图片插入失败");
+    // },
     getList() {
       console.log(this.queryParams)
       this.loading = true;
@@ -279,6 +300,9 @@ export default {
       };
       this.resetForm("form");
     },
+    closeDialog() {
+      this.open = false;
+    },
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
@@ -289,12 +313,12 @@ export default {
       this.dateRange = [];
       this.resetForm("queryForm");
       this.queryParams.systemId = undefined;
-      this.$refs.tree.setCurrentKey(null);
+      // this.$refs.tree.setCurrentKey(null);
       this.handleQuery();
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.userId);
+      this.ids = selection.map(item => item.moduleId);
       this.single = selection.length != 1;
       this.multiple = !selection.length;
     },
@@ -306,7 +330,8 @@ export default {
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-      this.reset();
+      // this.reset();
+      console.log(row)
       this.form = row;
       this.open = true;
       this.title = "修改模块";
@@ -350,7 +375,8 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const moduleId = row.moduleId || this.ids;
-      this.$modal.confirm('是否确认删除用户编号为"' + moduleId + '"的数据项？').then(function () {
+
+      this.$modal.confirm('是否确认删除编号为"' + moduleId + '"的数据项？').then(function () {
         return delModule(moduleId);
       }).then(() => {
         this.getList();
@@ -365,3 +391,10 @@ export default {
   }
 };
 </script>
+<style scoped>
+.editor-content {
+  margin-top: 20px;
+}
+</style>
+
+

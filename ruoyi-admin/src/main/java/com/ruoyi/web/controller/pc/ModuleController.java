@@ -4,7 +4,6 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.system.domain.PcModule;
-import com.ruoyi.system.domain.PcSystem;
 import com.ruoyi.system.service.IPcModuleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,9 +17,9 @@ public class ModuleController extends BaseController {
     private IPcModuleService iPcModuleService;
 
     @GetMapping("list")
-    public TableDataInfo list() {
+    public TableDataInfo list(Integer systemId) {
         startPage();
-        List<PcModule> data = iPcModuleService.getModuleDataList();
+        List<PcModule> data = iPcModuleService.getModuleDataList(systemId);
 
         return getDataTable(data);
     }
@@ -44,9 +43,9 @@ public class ModuleController extends BaseController {
         return AjaxResult.error();
     }
 
-    @PostMapping(path = "/{moduleId}")
-    public AjaxResult delete(@PathVariable Long moduleId) {
-        Integer resultNum = iPcModuleService.deleteModuleData(Math.toIntExact(moduleId));
+    @DeleteMapping("/{moduleIds}")
+    public AjaxResult delete(@PathVariable Long[] moduleIds) {
+        Integer resultNum = iPcModuleService.deleteModuleData(moduleIds);
         if (resultNum > 0) {
             return AjaxResult.success();
         }

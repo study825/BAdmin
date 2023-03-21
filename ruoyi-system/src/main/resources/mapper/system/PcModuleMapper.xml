@@ -13,9 +13,12 @@
         <result property="createTime" column="create_time"/>
     </resultMap>
 
-    <select id="getPcModuleList" resultMap="PcModuleResult">
+    <select id="getPcModuleList" resultMap="PcModuleResult" parameterType="Integer">
         select pc_module.*, pc_system.system_name from pc_module
                  left join pc_system on pc_module.system_id = pc_system.system_id
+        <where>
+            <if test="systemId != null and systemId != '' and systemId != 0">pc_module.system_id = #{systemId}</if>
+        </where>
     </select>
 
     <select id="getPcModuleListLike" resultMap="PcModuleResult" parameterType="String">

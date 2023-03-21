@@ -6,7 +6,7 @@ import com.ruoyi.system.domain.PcModule;
 import java.util.List;
 
 public interface PcModuleMapper extends BaseMapper<PcModule> {
-    List<PcModule> getPcModuleList();
+    List<PcModule> getPcModuleList(Integer systemId);
 
     List<PcModule> getPcModuleListLike(String keyword);
 }

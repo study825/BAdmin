@@ -66,4 +66,19 @@ public class UserServiceImpl implements IUserService {
 
         return userMapper.delete(queryWrapperUser);
     }
+
+    @Override
+    public Integer updatePassword(Long userId, String password) {
+        Random r = new Random();
+        String salt = String.valueOf(r.nextInt(1000));
+
+        User userInfo = new User();
+        userInfo.setPassword(Md5Utils.hash(password + salt));
+        userInfo.setSalt(salt);
+
+        QueryWrapper<User> queryWrapperUser = Wrappers.query();
+        queryWrapperUser.eq("user_id", userId);
+
+        return userMapper.update(userInfo, queryWrapperUser);
+    }
 }

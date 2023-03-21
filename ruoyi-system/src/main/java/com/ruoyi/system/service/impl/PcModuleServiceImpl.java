@@ -1,9 +1,9 @@
 package com.ruoyi.system.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ruoyi.system.domain.PcModule;
-import com.ruoyi.system.domain.PcSystem;
 import com.ruoyi.system.mapper.PcModuleMapper;
 import com.ruoyi.system.service.IPcModuleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,17 +24,15 @@ public class PcModuleServiceImpl implements IPcModuleService {
     }
 
     @Override
-    public List<PcModule> getModuleDataList() {
-
-        return pcModuleMapper.getPcModuleList();
+    public List<PcModule> getModuleDataList(Integer systemId) {
+        return pcModuleMapper.getPcModuleList(systemId);
     }
 
     @Override
-    public Integer deleteModuleData(Integer moduleId) {
-        QueryWrapper<PcModule> queryWrapperUser = Wrappers.query();
-        queryWrapperUser.eq("module_id", moduleId);
+    public Integer deleteModuleData(Long[] moduleIds) {
+        LambdaQueryWrapper<PcModule> queryWrapper = new QueryWrapper<PcModule>().lambda().in(PcModule::getModuleId, moduleIds);
 
-        return pcModuleMapper.delete(queryWrapperUser);
+        return pcModuleMapper.delete(queryWrapper);
     }
 
     @Override

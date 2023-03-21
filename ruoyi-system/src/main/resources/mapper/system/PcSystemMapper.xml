@@ -7,6 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="systemId" column="system_id"/>
         <result property="systemVersion" column="system_version"/>
         <result property="systemName" column="system_name"/>
+        <result property="des" column="des"/>
         <result property="systemLeader" column="system_leader"/>
         <result property="systemStatus" column="system_status"/>
         <result property="systemContent" column="system_content"/>
@@ -22,6 +23,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="apiNum" column="api_num"/>
         <result property="buildTime" column="build_time"/>
         <result property="sort" column="sort"/>
+        <result property="systemBackgroundImage" column="system_background_image"/>
         <result property="createTime" column="create_time"/>
     </resultMap>
 

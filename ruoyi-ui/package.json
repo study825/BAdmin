@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@riophae/vue-treeselect": "0.4.0",
-    "@tinymce/tinymce-vue": "^3.2.8",
+    "@tinymce/tinymce-vue": "^3.0.1",
     "axios": "0.24.0",
     "clipboard": "2.0.8",
     "core-js": "3.25.3",
@@ -59,6 +59,7 @@
     "vue-cropper": "0.5.5",
     "vue-meta": "2.4.0",
     "vue-router": "3.4.9",
+    "vue2-tinymce-editor": "0.0.1",
     "vuedraggable": "2.24.3",
     "vuex": "3.6.0"
   },

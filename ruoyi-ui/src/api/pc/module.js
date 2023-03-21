@@ -24,9 +24,17 @@ export function updateModule(data) {
   })
 }
 
+// export function delModule(moduleId) {
+//   return request({
+//     url: '/pc/module/' + moduleId,
+//     method: 'post'
+//   })
+// }
+
 export function delModule(moduleId) {
   return request({
     url: '/pc/module/' + moduleId,
-    method: 'post'
+    method: 'delete'
   })
 }
+

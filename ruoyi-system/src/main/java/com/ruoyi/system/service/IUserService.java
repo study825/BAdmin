@@ -14,4 +14,6 @@ public interface IUserService {
     List<User> getUserList();
 
     Integer deletePcUser(Long userId);
+
+    Integer updatePassword(Long userId, String password);
 }

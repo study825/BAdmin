@@ -27,7 +27,16 @@ public class UserController extends BaseController {
     @PostMapping("/{userId}")
     public AjaxResult delete(@PathVariable Long userId) {
         Integer result = iUserService.deletePcUser(userId);
-        if(result > 0) {
+        if (result > 0) {
+            return AjaxResult.success();
+        }
+        return AjaxResult.error();
+    }
+
+    @PostMapping("resetPwd")
+    public AjaxResult resetPwd(@RequestBody User user) {
+        Integer result = iUserService.updatePassword(user.getUserId(), user.getPassword());
+        if (result > 0) {
             return AjaxResult.success();
         }
         return AjaxResult.error();

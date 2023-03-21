@@ -1,16 +1,15 @@
 package com.ruoyi.system.service;
 
 import com.ruoyi.system.domain.PcModule;
-import com.ruoyi.system.domain.PcSystem;
 
 import java.util.List;
 
 public interface IPcModuleService {
     Integer addPcModuleData(PcModule pcModule);
 
-    List<PcModule> getModuleDataList();
+    List<PcModule> getModuleDataList(Integer systemId);
 
-    Integer deleteModuleData(Integer moduleId);
+    Integer deleteModuleData(Long[] moduleIds);
 
     Integer updatePcModuleData(PcModule pcModule);
 

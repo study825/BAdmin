@@ -13,6 +13,8 @@ public class PcSystem {
 
     private String systemName;
 
+    private String des;
+
     private String systemLeader;
 
     private String systemStatus;
@@ -42,6 +44,8 @@ public class PcSystem {
     private Integer sort;
 
     private Integer apiNum;
+
+    private String systemBackgroundImage;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
