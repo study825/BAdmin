@@ -247,3 +247,8 @@ export default {
   display: inline-block;
 }
 </style>
+<style>
+.v-modal {
+  z-index: 200 !important;
+}
+</style>
